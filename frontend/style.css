@@ -18,6 +18,8 @@ img {
 
 ul {
     list-style: none;
+    display: flex;
+    flex-wrap: row wrap;
 }
 
 button {
@@ -43,7 +45,8 @@ body {
     filter: invert(100%) sepia(0%) saturate(0%) hue-rotate(17deg) brightness(110%) contrast(101%);
 }
 
-nav img {
+nav img,
+.search-widgets img {
     filter: invert(47%) sepia(42%) saturate(3441%) hue-rotate(3deg) brightness(96%) contrast(103%);
 }
 
@@ -51,15 +54,6 @@ nav img {
     display: flex;
     flex-flow: row wrap;
     align-items: center;
-    justify-content: space-between;
-}
-
-.flex-split {
-    display: flex;
-}
-
-.flex-split > * {
-    flex: 1 0 0;
 }
 
 .home-button:hover,
@@ -106,11 +100,85 @@ nav a {
 
 /* Main */
 
-main {
-    --default-margin: 20px;
-}
-
 .search-row,
 .building-gallery {
-    margin: var(--default-margin) calc(3/2 * var(--default-margin));
+    margin: 15px 25px;
+}
+
+.search-row {
+    gap: 12px 8px;
+    justify-content: space-between;
+}
+
+@media all and (max-width: 633px) {
+    .search-row {
+        justify-content: space-evenly;
+    }
+}
+
+.search-row img {
+    position: absolute;
+    left: 15px;
+}
+
+.search-row input {
+    border: 1px solid lightgray;
+    border-radius: 5px;
+    padding: 0 15px;
+}
+
+.search-widgets {
+    gap: 8px;
+}
+
+.search-widgets button,
+.search-widgets input {
+    width: 140px;
+    height: 42px;
+}
+
+.search-widgets button {
+    position: relative;
+    border: 2px solid var(--highlight-color);
+    border-radius: 10px;
+    font-size: 16px;
+    font-weight: 600;
+    color: var(--highlight-color);
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.search-bar {
+    position: relative;
+    flex: 1 0 0;
+    display: flex;
+    align-items: center;
+    max-width: 50%;
+}
+
+@media all and (max-width: 900px) {
+    .search-bar {
+        order: 1;
+        min-width: 100%;
+    }
+    .search-widgets {
+        order: 2;
+    }
+}
+
+.search-bar input {
+    width: 100%;
+    height: 42px;
+    padding-left: 45px;
+    font-size: 16px;
+}
+
+.search-bar input:hover {
+    border-color: black;
+}
+
+.search-bar img {
+    opacity: 0.5;
 }

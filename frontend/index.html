@@ -5,7 +5,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Freerooms</title>
     <link rel="stylesheet" href="style.css">
-    <link rel="stylesheet" href="">
     <link rel="icon" href="assets/freeRoomsLogo.png">
 </head>
 
@@ -15,7 +14,7 @@
             <img src="assets/freeRoomsLogo.png" alt="">
             <span>Freerooms</span>
         </button>
-        <nav><ul class="flex-split">
+        <nav><ul>
             <li><button>
                 <img src="assets/magnifying-glass.svg" alt="">
             </button></li>
@@ -36,14 +35,20 @@
 
     <main>
         <div class="search-row flex-justify">
-            <div class="left-widgets flex-split"></div>
-            <div class="search-bar flex-justify">
+            <ul class="search-widgets">
+                <li><button><img src="assets/filter.svg">Filters</button></li>
+                <li><button><img src="assets/sort.svg">Sort</button></li>
+            </ul>
+            <div class="search-bar">
                 <img src="assets/magnifying-glass.svg" alt="">
                 <input type="text" placeholder="Search for a building...">
             </div>
-            <div class="right-widgets flex-split"></div>
+            <ul class="search-widgets">
+                <li><input type="date"></li>
+                <li><input type="time"></li>
+            </ul>
         </div>
-        <div class="building-gallery"></div>
+        <ul class="building-gallery"></ul>
     </main>
 </body>
 </html>
