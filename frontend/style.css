@@ -30,6 +30,7 @@ button {
 body {
     --highlight-color: rgb(239, 108, 0);
     --background-color: white;
+	font-family: Arial, Helvetica, sans-serif;
 }
 
 .selected {
@@ -48,6 +49,8 @@ nav img {
 
 .flex-justify {
     display: flex;
+    flex-flow: row wrap;
+    align-items: center;
     justify-content: space-between;
 }
 
@@ -67,8 +70,10 @@ nav li:hover {
 /* Header */
 
 header {
-    padding: 0 15px;
+    padding: 12px 15px;
     border-bottom: 1px solid lightgray;
+    justify-content: space-evenly;
+    gap: 5px max(calc(100% - 194px - 248px), 25px);
 }
 
 .home-button {
@@ -90,7 +95,6 @@ header {
 
 nav ul {
     gap: 10px;
-    margin: 10px 0;
 }
 
 nav button,
@@ -104,7 +108,6 @@ nav a {
 
 main {
     --default-margin: 20px;
-	font-family: Arial, Helvetica, sans-serif;
 }
 
 .search-row,
