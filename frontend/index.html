@@ -6,6 +6,7 @@
     <title>Freerooms</title>
     <link rel="stylesheet" href="style.css">
     <link rel="icon" href="assets/freeRoomsLogo.png">
+    <script type="module" src="script.js"></script>
 </head>
 
 <body>
@@ -49,6 +50,13 @@
             </ul>
         </div>
         <ul class="building-gallery"></ul>
+        <template id="tile-template">
+            <li class="building-tile">
+                <div class="building-label"></div>
+                <div class="rooms-counter"></div>
+                <img>
+            </li>
+        </template>
     </main>
 </body>
 </html>
