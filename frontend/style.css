@@ -6,12 +6,13 @@
     box-sizing: border-box;
 }
 
-a,
-img {
+a {
     display: block;
+    text-decoration: none;
 }
 
 img {
+    display: block;
     width: 20px;
     height: 20px;
 }
@@ -19,7 +20,7 @@ img {
 ul {
     list-style: none;
     display: flex;
-    flex-wrap: row wrap;
+    flex-flow: row wrap;
 }
 
 button {
@@ -56,11 +57,6 @@ nav img,
     align-items: center;
 }
 
-.home-button:hover,
-nav li:hover {
-    opacity: 0.75;
-}
-
 /* Header */
 
 header {
@@ -80,7 +76,7 @@ header {
     height: 50px;
 }
 
-.home-button span {
+.home-button a {
     font-family: 'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif;
     font-weight: 600;
     font-size: 28px;
@@ -96,6 +92,11 @@ nav a {
     padding: 10px;
     border: 1px solid var(--highlight-color);
     border-radius: 5px;
+}
+
+.home-button:hover,
+nav li:hover {
+    opacity: 0.75;
 }
 
 /* Main */
