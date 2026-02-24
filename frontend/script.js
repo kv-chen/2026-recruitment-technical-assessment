@@ -4,27 +4,42 @@ const template = document.getElementById('tile-template');
 
 const buildingTiles = buildings.map((building) => {
     const tile = template.content.firstElementChild.cloneNode(true);
-    tile.querySelector('.building-label').textContent = building.name;
-    tile.querySelector('.rooms-counter').textContent = building.rooms_available + ' rooms available';
+    const buildingLabel = tile.querySelector('.building-label');
+    const roomsCounter = tile.querySelector('.rooms-counter');
+    buildingLabel.textContent = building.name;
+    roomsCounter.textContent = building.rooms_available + ' rooms available';
 
     const img = tile.querySelector('img');
     img.src = 'assets/' + building.building_picture;
     img.alt = 'Photo of ' + building.name;
-    img.addEventListener('error', () => { tile.replaceChildren(img) });
+    img.addEventListener('error', () => {
+        buildingLabel.style.display = 'none';
+        roomsCounter.style.display = 'none';
+    });
 
     return tile;
 });
 
 const gallery = document.querySelector('.building-gallery');
 const placeholders = [document.createElement('li'), document.createElement('li')];
-gallery.replaceChildren(...buildingTiles, ...placeholders);
+const searchBuildings = (search='') => {
+    if (search === '') return [...buildingTiles, ...placeholders];
+
+    const filtered = buildingTiles.filter(tile => tile
+        .querySelector('.building-label').textContent
+        .toLowerCase()
+        .includes(search.toLowerCase())
+    );
+    return [...filtered, ...placeholders];
+};
+gallery.replaceChildren(...searchBuildings());
 
 {
     let isDoorOpen = true;
-    document.querySelector('.home-button img').addEventListener('click', (event) => {
+    document.querySelector('.home-button img').addEventListener('click', (e) => {
         isDoorOpen = !isDoorOpen;
         const filename = isDoorOpen ? 'freeRoomsLogo' : 'freeroomsDoorClosed';
-        event.currentTarget.src = `assets/${filename}.png`;
+        e.currentTarget.src = `assets/${filename}.png`;
     });
 }
 
@@ -41,3 +56,15 @@ gallery.replaceChildren(...buildingTiles, ...placeholders);
     darkModeButton.addEventListener('click', toggleDarkMode);
     if (window.matchMedia('prefers-color-scheme: dark').matches) toggleDarkMode();
 }
+
+const searchBar = document.querySelector('.search-bar input');
+searchBar.addEventListener('keydown', (e) => {
+    if (e.key === 'Enter') {
+        gallery.replaceChildren(...searchBuildings(e.currentTarget.value.trim()));
+    }
+});
+searchBar.addEventListener('input', (e) => {
+    if (e.currentTarget.value === "") {
+        gallery.replaceChildren(...searchBuildings());
+    }
+});
