@@ -24,7 +24,6 @@ ul {
 }
 
 button {
-    background-color: white;
     border: none;
 }
 
@@ -33,6 +32,9 @@ button {
 body {
     --highlight-color: rgb(239, 108, 0);
     --background-color: white;
+    --text-color: black;
+
+    background-color: var(--background-color);
 	font-family: Arial, Helvetica, sans-serif;
 }
 
@@ -40,14 +42,27 @@ body {
     background-color: var(--highlight-color);
 }
 
+input,
+button {
+    background-color: var(--background-color);
+}
+
+input,
+img {
+    color: var(--text-color);
+}
+
 /* Source: https://codepen.io/sosuke/pen/Pjoqqp */
 
-.selected img {
-    filter: invert(100%) sepia(0%) saturate(0%) hue-rotate(17deg) brightness(110%) contrast(101%);
+.selected img,
+.search-bar img.dark-mode {
+    /* White */
+    filter: invert(100%) brightness(150%);
 }
 
 nav img,
 .search-widgets img {
+    /* Orange */
     filter: invert(47%) sepia(42%) saturate(3441%) hue-rotate(3deg) brightness(96%) contrast(103%);
 }
 
@@ -61,7 +76,7 @@ nav img,
 
 header {
     padding: 12px 15px;
-    border-bottom: 1px solid lightgray;
+    border-bottom: 1px solid gray;
     justify-content: space-evenly;
     gap: 5px max(calc(100% - 194px - 248px), 25px);
 }
@@ -123,7 +138,7 @@ nav li:hover {
 }
 
 .search-row input {
-    border: 1px solid lightgray;
+    border: 1px solid gray;
     border-radius: 5px;
     padding: 0 15px;
 }
@@ -181,7 +196,7 @@ nav li:hover {
 }
 
 .search-bar img {
-    opacity: 0.5;
+    filter: invert(50%);
 }
 
 .building-gallery {
@@ -221,7 +236,8 @@ nav li:hover {
     top: 12px;
 
     padding: 10px;
-    background-color: white;
+    background-color: var(--background-color);
+    color: var(--text-color);
     font-size: 12px;
 }
 

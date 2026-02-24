@@ -18,3 +18,26 @@ const buildingTiles = buildings.map((building) => {
 const gallery = document.querySelector('.building-gallery');
 const placeholders = [document.createElement('li'), document.createElement('li')];
 gallery.replaceChildren(...buildingTiles, ...placeholders);
+
+{
+    let isDoorOpen = true;
+    document.querySelector('.home-button img').addEventListener('click', (event) => {
+        isDoorOpen = !isDoorOpen;
+        const filename = isDoorOpen ? 'freeRoomsLogo' : 'freeroomsDoorClosed';
+        event.currentTarget.src = `assets/${filename}.png`;
+    });
+}
+
+{
+    let isDarkMode = false;
+    const darkModeButton = document.querySelector('.dark-mode-button');
+    const toggleDarkMode = () => {
+        isDarkMode = !isDarkMode;
+        document.body.style.setProperty('--background-color', isDarkMode ? 'black' : 'white');
+        document.body.style.setProperty('--text-color', isDarkMode ? 'white' : 'black');
+        document.querySelector('.search-bar img').classList.toggle('dark-mode');
+        darkModeButton.classList.toggle('selected');
+    };
+    darkModeButton.addEventListener('click', toggleDarkMode);
+    if (window.matchMedia('prefers-color-scheme: dark').matches) toggleDarkMode();
+}
