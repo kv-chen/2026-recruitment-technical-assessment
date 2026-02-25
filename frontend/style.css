@@ -207,6 +207,8 @@ nav li:hover {
 }
 
 .building-gallery {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
     gap: 20px;
 }
 
@@ -215,8 +217,6 @@ nav li:hover {
 }
 
 .building-gallery li {
-    flex: 1 0 0;
-    min-width: 300px;
     aspect-ratio: 0.85;
     position: relative;
 }
@@ -227,7 +227,7 @@ nav li:hover {
     font-weight: 600;
 }
 
-.building-gallery .building-label {
+.building-label {
     left: 12px;
     bottom: 12px;
 
@@ -238,7 +238,7 @@ nav li:hover {
     font-size: 15px;
 }
 
-.building-gallery .rooms-counter {
+.rooms-counter {
     right: 12px;
     top: 12px;
 
@@ -252,4 +252,17 @@ nav li:hover {
     width: 100%;
     height: 100%;
     object-fit: cover;
+}
+
+@media (max-width: 605px) {
+    .building-gallery li {
+        aspect-ratio: 5;
+    }
+
+    .building-label {
+        background-color: transparent;
+        left: 0;
+        bottom: 0;
+        color: whitesmoke;
+    }
 }

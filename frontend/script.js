@@ -21,17 +21,13 @@ const buildingTiles = buildings.map((building) => {
 });
 
 const gallery = document.querySelector('.building-gallery');
-const placeholders = [document.createElement('li'), document.createElement('li')];
-const searchBuildings = (search='') => {
-    if (search === '') return [...buildingTiles, ...placeholders];
-
-    const filtered = buildingTiles.filter(tile => tile
+const searchBuildings = (search='') => (search === '')
+    ? buildingTiles
+    : buildingTiles.filter(tile => tile
         .querySelector('.building-label').textContent
         .toLowerCase()
         .includes(search.toLowerCase())
     );
-    return [...filtered, ...placeholders];
-};
 gallery.replaceChildren(...searchBuildings());
 
 {
