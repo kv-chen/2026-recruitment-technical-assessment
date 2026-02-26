@@ -1,9 +1,9 @@
 import express, { Request, Response } from "express";
 
 // ==== Type Definitions, feel free to add or modify ==========================
-interface cookbookEntry {
+interface cookbookData {
   name: string;
-  type: string;
+  type: "recipe" | "ingredient";
 }
 
 interface requiredItem {
@@ -11,13 +11,15 @@ interface requiredItem {
   quantity: number;
 }
 
-interface recipe extends cookbookEntry {
+interface recipe extends cookbookData {
   requiredItems: requiredItem[];
 }
 
-interface ingredient extends cookbookEntry {
+interface ingredient extends cookbookData {
   cookTime: number;
 }
+
+type cookbookEntry = recipe | ingredient;
 
 // =============================================================================
 // ==== HTTP Endpoint Stubs ====================================================
@@ -26,7 +28,7 @@ const app = express();
 app.use(express.json());
 
 // Store your recipes here!
-const cookbook: any = null;
+const cookbook = new Set<cookbookEntry>();
 
 // Task 1 helper (don't touch)
 app.post("/parse", (req:Request, res:Response) => {
@@ -61,11 +63,76 @@ const parse_handwriting = (recipeName: string): string | null => {
 }
 
 // [TASK 2] ====================================================================
+const isRecord = (obj: unknown): obj is { any: unknown } => {
+  return obj !== null && typeof obj === 'object' && !Array.isArray(obj);
+};
+
+const isCookbookData = (obj: unknown): obj is cookbookData => {
+  return isRecord(obj) &&
+    'name' in obj && typeof obj.name === 'string' &&
+    'type' in obj && (obj.type === 'recipe' || obj.type === 'ingredient');
+};
+
+const isRequiredItem = (obj: unknown): obj is requiredItem => {
+  return isRecord(obj)
+    && 'name' in obj && typeof obj.name === 'string'
+    && 'quantity' in obj && typeof obj.quantity === 'number';
+};
+
+const isRecipe = (entry: cookbookData): entry is recipe => {
+  return 'requiredItems' in entry
+    && Array.isArray(entry.requiredItems)
+    && entry.requiredItems.every(isRequiredItem);
+};
+
+const isIngredient = (entry: cookbookData): entry is ingredient => {
+  return 'cookTime' in entry && typeof entry.cookTime === 'number';
+};
+
+const parseCookbookEntry = (entry: unknown): cookbookEntry => {
+  if (!isCookbookData(entry))
+    throw new Error('invalid name or type');
+  if ([...cookbook].some(item => item.name === entry.name))
+    throw new Error('entry already exists');
+
+  return entry.type === 'recipe' ? parseRecipe(entry) : parseIngredient(entry);
+};
+
+const parseRecipe = (entry: cookbookData): recipe => {
+  if (!isRecipe(entry))
+    throw new Error('invalid recipe');
+  const itemNames = entry.requiredItems.map(item => item.name);
+  if (new Set(itemNames).size < itemNames.length)
+    throw new Error('duplicate ingredients');
+
+  return {
+    name: entry.name,
+    type: entry.type,
+    requiredItems: entry.requiredItems
+  };
+};
+
+const parseIngredient = (entry: cookbookData): ingredient => {
+  if (!isIngredient(entry))
+    throw new Error('invalid ingredient');
+  if (entry.cookTime < 0)
+    throw new Error('negative cook time');
+
+  return {
+    name: entry.name,
+    type: entry.type,
+    cookTime: entry.cookTime
+  };
+};
+
 // Endpoint that adds a CookbookEntry to your magical cookbook
 app.post("/entry", (req:Request, res:Response) => {
-  // TODO: implement me
-  res.status(500).send("not yet implemented!")
-
+  try {
+    cookbook.add(parseCookbookEntry(req.body));
+    res.json({});
+  } catch (e) {
+    res.status(400).send((e as Error).message);
+  }
 });
 
 // [TASK 3] ====================================================================
