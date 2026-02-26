@@ -142,7 +142,7 @@ describe("Task 3", () => {
       const meatball = {
         type: "recipe",
         name: "Skibidi",
-        requiredItems: [{ name: "Bruh", quantity: 1 }],
+        requiredItems: [{ name: "Bruh", quantity: 2 }],
       };
       const resp1 = await postEntry(meatball);
       expect(resp1.status).toBe(200);
@@ -155,7 +155,27 @@ describe("Task 3", () => {
       expect(resp2.status).toBe(200);
 
       const resp3 = await getTask3("Skibidi");
+      expect(resp3.body.name).toStrictEqual("Skibidi");
+      expect(resp3.body.cookTime).toStrictEqual(4);
+      expect(resp3.body.ingredients).toContainEqual({name:"Bruh", quantity:2});
       expect(resp3.status).toBe(200);
+
+      const extra = {
+        type: "recipe",
+        name: "Extra",
+        requiredItems: [
+          {name: "Bruh", quantity: 2},
+          {name: "Skibidi", quantity: 4}
+        ],
+      };
+      const resp4 = await postEntry(extra);
+      expect(resp4.status).toBe(200);
+
+      const resp5 = await getTask3("Extra");
+      expect(resp5.body.name).toStrictEqual("Extra");
+      expect(resp5.body.cookTime).toStrictEqual(20);
+      expect(resp5.body.ingredients).toContainEqual({name:"Bruh", quantity:10});
+      expect(resp5.status).toBe(200);
     });
   });
 });

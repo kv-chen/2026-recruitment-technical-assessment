@@ -34,7 +34,7 @@ const cookbook = new Set<cookbookEntry>();
 app.post("/parse", (req:Request, res:Response) => {
   const { input } = req.body;
 
-  const parsed_string = parse_handwriting(input)
+  const parsed_string = parse_handwriting(input);
   if (parsed_string == null) {
     res.status(400).send("this string is cooked");
     return;
@@ -60,7 +60,7 @@ const parse_handwriting = (recipeName: string): string | null => {
     .map(capitalize)
     .join(' ');
   return (parsed.length > 0) ? parsed : null;
-}
+};
 
 // [TASK 2] ====================================================================
 const isRecord = (obj: unknown): obj is { any: unknown } => {
@@ -80,13 +80,14 @@ const isRequiredItem = (obj: unknown): obj is requiredItem => {
 };
 
 const isRecipe = (entry: cookbookData): entry is recipe => {
-  return 'requiredItems' in entry
-    && Array.isArray(entry.requiredItems)
+  return entry.type === 'recipe'
+    && 'requiredItems' in entry && Array.isArray(entry.requiredItems)
     && entry.requiredItems.every(isRequiredItem);
 };
 
 const isIngredient = (entry: cookbookData): entry is ingredient => {
-  return 'cookTime' in entry && typeof entry.cookTime === 'number';
+  return entry.type === 'ingredient'
+    && 'cookTime' in entry && typeof entry.cookTime === 'number';
 };
 
 const parseCookbookEntry = (entry: unknown): cookbookEntry => {
@@ -137,10 +138,59 @@ app.post("/entry", (req:Request, res:Response) => {
 
 // [TASK 3] ====================================================================
 // Endpoint that returns a summary of a recipe that corresponds to a query name
-app.get("/summary", (req:Request, res:Request) => {
-  // TODO: implement me
-  res.status(500).send("not yet implemented!")
+const findEntry = (name: string): cookbookEntry => {
+  const entry = [...cookbook].find(item => item.name === name);
+  if (!entry) throw new Error('cookbook entry not found');
+  return entry;
+};
 
+const getIngredients = (recipe: recipe): requiredItem[] => {
+  return recipe.requiredItems.flatMap(item => {
+    const entry = findEntry(item.name);
+    if (isRecipe(entry)) {
+      return getIngredients(entry).map(baseIngr => ({
+        name: baseIngr.name,
+        quantity: baseIngr.quantity * item.quantity
+      }));
+    }
+    if (isIngredient(entry)) {
+      return item;
+    }
+    throw new Error('invalid cookbook entry');
+  });
+};
+
+const getBaseIngredients = (recipeName: string): requiredItem[] => {
+  const recipe = findEntry(recipeName);
+  if (!isRecipe(recipe))
+    throw new Error('recipe not found');
+
+  const totals = getIngredients(recipe).reduce((totals, ingr) => {
+    totals[ingr.name] = (totals[ingr.name] ?? 0) + ingr.quantity;
+    return totals;
+  }, {} as Record<string, number>);
+
+  return Object.entries(totals).map(([name, quantity]) => ({name, quantity}));
+};
+
+const getRecipeSummary = (recipeName: string): {
+  name: string,
+  cookTime: number,
+  ingredients: requiredItem[]
+} => {
+  const ingredients = getBaseIngredients(recipeName);
+  const cookTime = ingredients.reduce((totalTime, ingr) =>
+    totalTime + (findEntry(ingr.name) as ingredient).cookTime * ingr.quantity,
+  0);
+  return { name: recipeName, ingredients, cookTime };
+};
+
+app.get("/summary", (req:Request, res:Request) => {
+  try {
+    res.json(getRecipeSummary(req.query.name));
+  } catch (e) {
+    res.status(400).send((e as Error).message);
+  }
 });
 
 // =============================================================================
